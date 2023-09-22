@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Fiko Borizqy. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="fiko" translate="label" sortOrder="700">
+            <label>Fiko</label>
+        </tab>
+        <section id="fiko_advanced_order_number" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Advanced Order Number</label>
+            <tab>fiko</tab>
+            <resource>Fiko_AdvancedOrderNumber::config_advanced_order_number</resource>
+            <group id="order" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Order</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Toggle to enable Advanced Order Number.</comment>
+                </field>
+                <field id="format" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Order Number Format</label>
+                    <comment>
+                        <![CDATA[
+                            Define the format of the custom order number that will be created.
+
+                            <br/><br/> You can use these options:
+                            <br/> {{counter}} : this is the incremental id
+                            <br/> {{d}} : 1 or 2 digits of the day (1-31)
+                            <br/> {{dd}} : 2 digits of the day (01-31)
+                            <br/> {{m}} : 1 or 2 digits of the month (1-12)
+                            <br/> {{mm}} : 2 digits of the month (01-12)
+                            <br/> {{yy}} : 2 digits of the year (00-99)
+                            <br/> {{yyyy}} : 4 digits of the year (1996-2023)
+                            <br/> {{storeViewId}} : store view id of where the order is created
+                            <br/> {{storeViewCode}} : store view code of where the order is created
+                            <br/> {{storeId}} : store id of where the order is created
+                            <br/> {{storeCode}} : store code of where the order is created
+                            <br/> {{websiteId}} : website id of where the order is created
+                            <br/> {{websiteCode}} : website code of where the order is created
+
+                            <br/><br/> For example:
+                            <br/> <strong>FIKO-{{yyyy}}-{{mm}}-{{dd}}-{{counter}}</strong> will create order number of <strong>FIKO-2023-07-02-000000001</strong>
+                        ]]>
+                    </comment>
+                </field>
+                <field id="initial_counter_number" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Initial Counter Number</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <comment>
+                    <![CDATA[
+                        When counter number is being reset, this initial number will be used as a starting number.
+                        <br/><strong>e.g.</strong> if it is configured as 4, then when counter number is being reset, it will use 4 as a starting counter/order number.
+                    ]]>
+                    </comment>
+                </field>
+                <field id="incremental_counter_number" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Incremental Counter Number</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <comment>
+                        <![CDATA[
+                            Space of number between the current/order counter number and the next counter/order number.
+                            <br/><strong>e.g.</strong> If 007 is the last counter/order number and the configuration is "3", then next counter/order number will be 010.
+                        ]]>
+                    </comment>
+                </field>
+                <field id="counter_padding" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Counter Padding</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <comment>
+                        <![CDATA[
+                            Total digit of the counter number.
+                            <br/><strong>e.g.</strong> if it is configured as 5 and the current counter number is 13, then the counter/order number will be 00013.
+                        ]]>
+                    </comment>
+                </field>
+                <field id="reset_counter_number_behaviour" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Reset Counter Number Behaviour</label>
+                    <source_model>Fiko\AdvancedOrderNumber\Model\Config\Source\ResetBehaviour</source_model>
+                    <comment>
+                        <![CDATA[
+                            it is going to reset counter number on the the selected configuration.
+                            <br/><strong>e.g.</strong> if configuration is <strong>Daily</strong>, then counter number will be reset every day.
+                        ]]>
+                    </comment>
+                </field>
+                <field id="counter" type="hidden" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <depends>
+                        <field id="*/*/enabled">0</field>
+                    </depends>
+                </field>
+                <field id="reset_counter_manually" translate="button_label" sortOrder="68" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label/>
+                    <button_label>Reset Counter Number</button_label>
+                    <frontend_model>Fiko\AdvancedOrderNumber\Block\Adminhtml\System\Config\ResetCounterNumber</frontend_model>
+                    <comment>You can also reset manually the number by clicking this button.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

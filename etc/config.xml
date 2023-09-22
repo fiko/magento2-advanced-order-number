@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Fiko Borizqy. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <fiko_advanced_order_number>
+            <order>
+                <enabled>1</enabled>
+                <format>{{counter}}</format>
+                <initial_counter_number>1</initial_counter_number>
+                <incremental_counter_number>1</incremental_counter_number>
+                <counter_padding>9</counter_padding>
+                <reset_counter_number_behaviour>0</reset_counter_number_behaviour>
+            </order>
+        </fiko_advanced_order_number>
+    </default>
+</config>
