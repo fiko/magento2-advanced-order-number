@@ -1,0 +1,12 @@
+{
+    "fiko_aon_counter": {
+        "column": {
+            "scope": true,
+            "scope_id": true,
+            "number": true
+        },
+        "constraint": {
+            "FIKO_AON_COUNTER_SCOPE_SCOPE_ID": true
+        }
+    }
+}
