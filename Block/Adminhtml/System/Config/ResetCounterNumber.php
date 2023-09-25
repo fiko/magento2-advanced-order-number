@@ -7,29 +7,56 @@ declare(strict_types=1);
 
 namespace Fiko\AdvancedOrderNumber\Block\Adminhtml\System\Config;
 
-use Magento\AdvancedSearch\Block\Adminhtml\System\Config\TestConnection;
+use Magento\Config\Block\System\Config\Form\Field;
+use Magento\Framework\Data\Form\Element\AbstractElement;
 
 /**
  * Reset Counter Number Block
  */
-class ResetCounterNumber extends TestConnection
+class ResetCounterNumber extends Field
 {
     /**
-     * @inheritdoc
+     * Set template to itself
+     *
+     * @return $this
      */
-    protected function _getFieldMapping(): array
+    protected function _prepareLayout()
     {
-        $fields = [
-            'engine' => 'catalog_search_engine',
-            'hostname' => 'catalog_search_elasticsearch7_server_hostname',
-            'port' => 'catalog_search_elasticsearch7_server_port',
-            'index' => 'catalog_search_elasticsearch7_index_prefix',
-            'enableAuth' => 'catalog_search_elasticsearch7_enable_auth',
-            'username' => 'catalog_search_elasticsearch7_username',
-            'password' => 'catalog_search_elasticsearch7_password',
-            'timeout' => 'catalog_search_elasticsearch7_server_timeout',
-        ];
+        parent::_prepareLayout();
+        $this->setTemplate('Fiko_AdvancedOrderNumber::system/config/resetcounter.phtml');
+        return $this;
+    }
 
-        return array_merge(parent::_getFieldMapping(), $fields);
+    /**
+     * Unset some non-related element parameters
+     *
+     * @param AbstractElement $element
+     * @return string
+     */
+    public function render(AbstractElement $element)
+    {
+        $element = clone $element;
+        $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+        return parent::render($element);
+    }
+
+    /**
+     * Get the button and scripts contents
+     *
+     * @param AbstractElement $element
+     * @return string
+     */
+    protected function _getElementHtml(AbstractElement $element): string
+    {
+        $originalData = $element->getOriginalData();
+        $this->addData(
+            [
+                'button_label' => __($originalData['button_label']),
+                'html_id' => $element->getHtmlId(),
+                'ajax_url' => $this->_urlBuilder->getUrl('fiko_acn/resetcounter/order'),
+            ]
+        );
+
+        return $this->_toHtml();
     }
 }

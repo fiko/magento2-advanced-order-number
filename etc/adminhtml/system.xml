@@ -106,7 +106,6 @@
                     <label/>
                     <button_label>Reset Counter Number</button_label>
                     <frontend_model>Fiko\AdvancedOrderNumber\Block\Adminhtml\System\Config\ResetCounterNumber</frontend_model>
-                    <comment>You can also reset manually the number by clicking this button.</comment>
                 </field>
             </group>
         </section>
