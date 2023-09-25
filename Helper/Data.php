@@ -10,8 +10,8 @@ namespace Fiko\AdvancedOrderNumber\Helper;
 use Magento\Config\Model\ResourceModel\Config\Data\CollectionFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Data
@@ -108,20 +108,18 @@ class Data
      */
     public function getCurrentCounter($scopeId): int
     {
-        $pathCurrentCounter = self::PATH_ORDER_CURRENT_COUNTER;
-        $pathInitialCounter = self::PATH_ORDER_INITIAL_COUNTER;
-        $initialCounter = $this->getConfig($pathInitialCounter, ScopeInterface::SCOPE_STORES, $scopeId);
+        $initialCounter = $this->getConfig(self::PATH_ORDER_INITIAL_COUNTER, ScopeInterface::SCOPE_STORES, $scopeId);
 
         // fetching configuration by ignoring cache
         $configCollection = $this->configCollectionFactory->create();
         $configCollection->addFieldToFilter('scope', ScopeInterface::SCOPE_STORES);
         $configCollection->addFieldToFilter('scope_id', $scopeId);
-        $configCollection->addFieldToFilter('path', $pathCurrentCounter);
+        $configCollection->addFieldToFilter('path', self::PATH_ORDER_CURRENT_COUNTER);
         $configCollection->addFieldToSelect('value');
         $currentCounter = (int) $configCollection->load()->getFirstItem()->getValue();
 
         if ($currentCounter === null) {
-            $this->setConfig($pathCurrentCounter, $initialCounter, ScopeInterface::SCOPE_STORES, $scopeId);
+            $this->setConfig(self::PATH_ORDER_CURRENT_COUNTER, $initialCounter, ScopeInterface::SCOPE_STORES, $scopeId);
             $currentCounter = 1;
         }
 
@@ -136,15 +134,16 @@ class Data
      */
     public function generateNextCounter($scopeId): int
     {
-        $pathCurrentCounter = self::PATH_ORDER_CURRENT_COUNTER;
-        $pathIncrementalCounter = self::PATH_ORDER_INCREMENTAL_COUNTER;
-
         $currentCounter = (int) $this->getCurrentCounter($scopeId);
-        $incrementalCounter = (int) $this->getConfig($pathIncrementalCounter, ScopeInterface::SCOPE_STORES, $scopeId);
+        $incrementalCounter = (int) $this->getConfig(
+            self::PATH_ORDER_INCREMENTAL_COUNTER,
+            ScopeInterface::SCOPE_STORES,
+            $scopeId
+        );
         $incrementalCounter = ($incrementalCounter > 0) ? $incrementalCounter : 1;
         $nextCounter = $currentCounter + $incrementalCounter;
 
-        $this->setConfig($pathCurrentCounter, $nextCounter, ScopeInterface::SCOPE_STORES, $scopeId);
+        $this->setConfig(self::PATH_ORDER_CURRENT_COUNTER, $nextCounter, ScopeInterface::SCOPE_STORES, $scopeId);
 
         return $nextCounter;
     }
@@ -156,18 +155,18 @@ class Data
         $currentGroup = $currentStore->getGroup();
         $currentWebsite = $currentStore->getWebsite();
         $replaces = [
-            '{{d}}' => $this->dateTime->date('j', $currentDate),
-            '{{dd}}' => $this->dateTime->date('d', $currentDate),
-            '{{m}}' => $this->dateTime->date('n', $currentDate),
-            '{{mm}}' => $this->dateTime->date('m', $currentDate),
-            '{{yy}}' => $this->dateTime->date('y', $currentDate),
-            '{{yyyy}}' => $this->dateTime->date('Y', $currentDate),
-            '{{storeId}}' => $currentStore->getId(),
-            '{{storeCode}}' => $currentStore->getCode(),
-            '{{groupId}}' => $currentGroup->getId(),
-            '{{groupCode}}' => $currentGroup->getCode(),
-            '{{websiteId}}' => $currentWebsite->getId(),
-            '{{websiteCode}}' => $currentWebsite->getCode(),
+            '{d}' => $this->dateTime->date('j', $currentDate),
+            '{dd}' => $this->dateTime->date('d', $currentDate),
+            '{m}' => $this->dateTime->date('n', $currentDate),
+            '{mm}' => $this->dateTime->date('m', $currentDate),
+            '{yy}' => $this->dateTime->date('y', $currentDate),
+            '{yyyy}' => $this->dateTime->date('Y', $currentDate),
+            '{storeId}' => $currentStore->getId(),
+            '{storeCode}' => $currentStore->getCode(),
+            '{groupId}' => $currentGroup->getId(),
+            '{groupCode}' => $currentGroup->getCode(),
+            '{websiteId}' => $currentWebsite->getId(),
+            '{websiteCode}' => $currentWebsite->getCode(),
         ];
 
         return str_ireplace(array_keys($replaces), array_values($replaces), $format);

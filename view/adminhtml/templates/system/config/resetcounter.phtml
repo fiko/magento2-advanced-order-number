@@ -3,28 +3,16 @@
  * Copyright © Fiko Borizqy. All rights reserved.
  * See COPYING.txt for license details.
  */
-
- /**
-<button class="scalable" type="button" id="<?= $block->getHtmlId() ?>" data-mage-init='{"testConnection":{
-    "url": "<?= $block->escapeUrl($block->getAjaxUrl()) ?>",
-    "elementId": "<?= $block->getHtmlId() ?>",
-    "successText": "<?= $block->escapeHtmlAttr(__('Successful! Test again?')) ?>",
-    "failedText": "<?= $block->escapeHtmlAttr(__('Connection failed! Test again?')) ?>",
-    "fieldMapping": "<?= $block->getFieldMapping() ?>"}, "validation": {}}'>
-    <span id="<?= $block->getHtmlId() ?>_result"><?= $block->escapeHtml($block->getButtonLabel()) ?></span>
-</button>
-*/
 ?>
-
 <div class="message message-warning">
-<small>
-    - <?= $escaper->escapeHtml(__('Current Counter Number of')) ?> <strong>Store View 1: 12</strong> <br/>
-    - <?= $escaper->escapeHtml(__('Current Counter Number of')) ?> <strong>Store View 1: 23</strong> <br/>
-</small>
+    <small>
+        - <?= $escaper->escapeHtml(__('Current Counter Number of')) ?> <strong>Store View 1: 12</strong> <br/>
+        - <?= $escaper->escapeHtml(__('Current Counter Number of')) ?> <strong>Store View 1: 23</strong> <br/>
+    </small>
 </div>
 <br/>
 <button class="scalable" type="button" id="<?= $block->getHtmlId() ?>">
-    <span id="<?= $block->getHtmlId() ?>_result"><?= $block->escapeHtml($block->getButtonLabel()) ?></span>
+    <span id="<?= $block->getHtmlId() ?>_result"><?= $escaper->escapeHtml($block->getButtonLabel()) ?></span>
 </button>
 <small>
     <br/><?= $escaper->escapeHtml(__('You can also reset manually the number by clicking this button.')) ?>
@@ -45,16 +33,26 @@ require([
                     $('#<?= $block->getHtmlId() ?>').prop('disabled', true);
                     resetCounter();
                 },
-                // always: function(){
-                //     $('#<?= $block->getHtmlId() ?>_result').text('<?= $block->escapeHtml($block->getButtonLabel()) ?>');
-                //     $('#<?= $block->getHtmlId() ?>').prop('disabled', false);
-                // }
             }
         });
     });
 
     const resetCounter = async () => {
-        console.log('resetting...');
+        $.ajax({
+            url: "<?= $escaper->escapeJs($block->getAjaxUrl()) ?>",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                form_key: '<?= $escaper->escapeJs($block->getFormKey()) ?>',
+            },
+            complete: function(response) {
+                $('#<?= $block->getHtmlId() ?>_result').text(response?.responseJSON?.message ?? 'Error happens. Try again.');
+                $('#<?= $block->getHtmlId() ?>').prop('disabled', false);
+            },
+            error: function (xhr, status, errorThrown) {
+                console.log('Error happens. Try again.');
+            }
+        });
     };
 });
 </script>

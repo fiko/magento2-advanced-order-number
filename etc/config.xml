@@ -10,7 +10,7 @@
         <fiko_advanced_order_number>
             <order>
                 <enabled>1</enabled>
-                <format>{{storeId}}{{counter}}</format>
+                <format>{storeId}{counter}</format>
                 <initial_counter_number>1</initial_counter_number>
                 <incremental_counter_number>1</incremental_counter_number>
                 <counter_padding>9</counter_padding>

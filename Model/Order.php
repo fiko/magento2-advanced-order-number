@@ -9,6 +9,7 @@ namespace Fiko\AdvancedOrderNumber\Model;
 
 use Fiko\AdvancedOrderNumber\Helper\Data;
 use Magento\Store\Model\ScopeInterface;
+use Exception;
 
 class Order
 {
@@ -23,7 +24,7 @@ class Order
 
     public function customIncrementId($storeId = null): ?string
     {
-        $this->storeId = $storeId !== null ? $storeId: $this->helper->storeManager->getStore()->getId();
+        $this->storeId = $storeId !== null ? $storeId : $this->helper->storeManager->getStore()->getId();
         if (! $this->helper->getConfig(Data::PATH_ORDER_ENABLED, ScopeInterface::SCOPE_STORE, $this->storeId)) {
             return null;
         }
@@ -47,8 +48,34 @@ class Order
 
     public function setupFormat($format, $counter)
     {
-        $format = str_replace('{{counter}}', $counter, $format);
+        $format = str_replace('{counter}', $counter, $format);
 
         return $this->helper->setupFormat($format, $counter, $this->storeId);
+    }
+
+    public function resetCounterNumber($storeId = null)
+    {
+        $stores = $storeId !== null ? [(int) $storeId]: $this->helper->storeManager->getStores(true);
+        try {
+            foreach ($stores as $store) {
+                $storeId = is_int($store) ? $store : (int) $store->getId();
+                if ($storeId === 0) {
+                    continue;
+                }
+                $initialCounter = $this->helper->getConfig(
+                    Data::PATH_ORDER_INITIAL_COUNTER,
+                    ScopeInterface::SCOPE_STORES,
+                    $storeId
+                );
+                $this->helper->setConfig(
+                    Data::PATH_ORDER_CURRENT_COUNTER,
+                    $initialCounter,
+                    ScopeInterface::SCOPE_STORES,
+                    $storeId
+                );
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 }
