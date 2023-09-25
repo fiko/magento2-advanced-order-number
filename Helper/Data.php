@@ -108,19 +108,22 @@ class Data
      */
     public function getCurrentCounter($scopeId): int
     {
-        $initialCounter = $this->getConfig(self::PATH_ORDER_INITIAL_COUNTER, ScopeInterface::SCOPE_STORES, $scopeId);
-
+        $initialCounter = (int) $this->getConfig(
+            self::PATH_ORDER_INITIAL_COUNTER,
+            ScopeInterface::SCOPE_STORES,
+            $scopeId
+        );
         // fetching configuration by ignoring cache
-        $configCollection = $this->configCollectionFactory->create();
-        $configCollection->addFieldToFilter('scope', ScopeInterface::SCOPE_STORES);
-        $configCollection->addFieldToFilter('scope_id', $scopeId);
-        $configCollection->addFieldToFilter('path', self::PATH_ORDER_CURRENT_COUNTER);
-        $configCollection->addFieldToSelect('value');
+        $configCollection = $this->configCollectionFactory->create()
+            ->addFieldToFilter('scope', ScopeInterface::SCOPE_STORES)
+            ->addFieldToFilter('scope_id', $scopeId)
+            ->addFieldToFilter('path', self::PATH_ORDER_CURRENT_COUNTER)
+            ->addFieldToSelect('value');
         $currentCounter = (int) $configCollection->load()->getFirstItem()->getValue();
 
-        if ($currentCounter === null) {
+        if ($currentCounter === 0) {
             $this->setConfig(self::PATH_ORDER_CURRENT_COUNTER, $initialCounter, ScopeInterface::SCOPE_STORES, $scopeId);
-            $currentCounter = 1;
+            $currentCounter = $initialCounter;
         }
 
         return $currentCounter;
@@ -134,6 +137,11 @@ class Data
      */
     public function generateNextCounter($scopeId): int
     {
+        $initialCounter = (int) $this->getConfig(
+            self::PATH_ORDER_INITIAL_COUNTER,
+            ScopeInterface::SCOPE_STORES,
+            $scopeId
+        );
         $currentCounter = (int) $this->getCurrentCounter($scopeId);
         $incrementalCounter = (int) $this->getConfig(
             self::PATH_ORDER_INCREMENTAL_COUNTER,
@@ -141,11 +149,15 @@ class Data
             $scopeId
         );
         $incrementalCounter = ($incrementalCounter > 0) ? $incrementalCounter : 1;
-        $nextCounter = $currentCounter + $incrementalCounter;
 
-        $this->setConfig(self::PATH_ORDER_CURRENT_COUNTER, $nextCounter, ScopeInterface::SCOPE_STORES, $scopeId);
+        $this->setConfig(
+            self::PATH_ORDER_CURRENT_COUNTER,
+            $currentCounter + $incrementalCounter,
+            ScopeInterface::SCOPE_STORES,
+            $scopeId
+        );
 
-        return $nextCounter;
+        return $currentCounter;
     }
 
     public function setupFormat($format, $counter, $storeId)

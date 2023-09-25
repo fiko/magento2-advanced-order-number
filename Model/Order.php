@@ -7,18 +7,21 @@ declare(strict_types=1);
 
 namespace Fiko\AdvancedOrderNumber\Model;
 
-use Fiko\AdvancedOrderNumber\Helper\Data;
-use Magento\Store\Model\ScopeInterface;
 use Exception;
+use Fiko\AdvancedOrderNumber\Helper\Data;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as SalesOrderCollectionFactory;
+use Magento\Store\Model\ScopeInterface;
 
 class Order
 {
     public $helper;
     protected $storeId;
+    protected $salesOrderCollectionFactory;
 
-    public function __construct(Data $helper)
+    public function __construct(Data $helper, SalesOrderCollectionFactory $salesOrderCollectionFactory)
     {
         $this->helper = $helper;
+        $this->salesOrderCollectionFactory = $salesOrderCollectionFactory;
         $this->storeId = null;
     }
 
@@ -43,7 +46,12 @@ class Order
         $nextCounter = (string) $this->helper->generateNextCounter($this->storeId);
         $nextCounter = str_pad($nextCounter, $counterPadding, $PaddingCharacter, STR_PAD_LEFT);
 
-        return $this->setupFormat($format, $nextCounter);
+        $result = $this->setupFormat($format, $nextCounter);
+        if ($this->validateIncrementId($result) === false) {
+            $result = $this->customIncrementId($storeId);
+        }
+
+        return $result;
     }
 
     public function setupFormat($format, $counter)
@@ -55,7 +63,7 @@ class Order
 
     public function resetCounterNumber($storeId = null)
     {
-        $stores = $storeId !== null ? [(int) $storeId]: $this->helper->storeManager->getStores(true);
+        $stores = $storeId !== null ? [(int) $storeId] : $this->helper->storeManager->getStores(true);
         try {
             foreach ($stores as $store) {
                 $storeId = is_int($store) ? $store : (int) $store->getId();
@@ -77,5 +85,14 @@ class Order
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
+    }
+
+    public function validateIncrementId($incrementId)
+    {
+        $salesOrderCollection = $this->salesOrderCollectionFactory->create()
+            ->addFieldToSelect('increment_id')
+            ->addAttributeToFilter('increment_id', $incrementId);
+
+        return $salesOrderCollection->count() === 0 ? true : false;
     }
 }
