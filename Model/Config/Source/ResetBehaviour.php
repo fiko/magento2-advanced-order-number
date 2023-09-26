@@ -19,11 +19,11 @@ class ResetBehaviour implements ArrayInterface
     public function toOptionArray(): array
     {
         return [
-            ['value' => 0, 'label' => __('Never')],
-            ['value' => 1, 'label' => __('Daily')],
-            ['value' => 2, 'label' => __('Weekly')],
-            ['value' => 3, 'label' => __('Monthly')],
-            ['value' => 4, 'label' => __('Annually')],
+            ['value' => '0 0 31 2 *', 'label' => __('Never')],
+            ['value' => '0 0 * * *', 'label' => __('Daily')],
+            ['value' => '0 0 * * 1', 'label' => __('Weekly')],
+            ['value' => '0 0 1 * *', 'label' => __('Monthly')],
+            ['value' => '0 0 * 1 *', 'label' => __('Annually')],
         ];
     }
 }

@@ -61,6 +61,11 @@ class Order
         return $this->helper->setupFormat($format, $counter, $this->storeId);
     }
 
+    public function scheduledResetCounterNumber()
+    {
+        $this->resetCounterNumber();
+    }
+
     public function resetCounterNumber($storeId = null)
     {
         $stores = $storeId !== null ? [(int) $storeId] : $this->helper->storeManager->getStores(true);

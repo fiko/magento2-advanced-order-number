@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="fiko">
+        <job name="fiko_aon_reset_order_current_counter_number" instance="Fiko\AdvancedOrderNumber\Model\Order" method="scheduledResetCounterNumber">
+            <config_path>fiko_advanced_order_number/order/reset_counter_number_behaviour</config_path>
+        </job>
+    </group>
+</config>

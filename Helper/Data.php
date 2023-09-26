@@ -22,7 +22,6 @@ class Data
     public const PATH_ORDER_INCREMENTAL_COUNTER = 'fiko_advanced_order_number/order/incremental_counter_number';
     public const PATH_ORDER_COUNTER_PADDING = 'fiko_advanced_order_number/order/counter_padding';
     public const PATH_ORDER_PADDING_CHARACTER = 'fiko_advanced_order_number/order/padding_character';
-    public const PATH_ORDER_RESET_BEHAVIOUR = 'fiko_advanced_order_number/order/reset_counter_number_behaviour';
     public const PATH_ORDER_CURRENT_COUNTER = 'fiko_advanced_order_number/order/current_counter';
 
     /**

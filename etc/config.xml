@@ -15,7 +15,7 @@
                 <incremental_counter_number>1</incremental_counter_number>
                 <counter_padding>9</counter_padding>
                 <padding_character>0</padding_character>
-                <reset_counter_number_behaviour>0</reset_counter_number_behaviour>
+                <reset_counter_number_behaviour>0 0 31 2 *</reset_counter_number_behaviour>
             </order>
         </fiko_advanced_order_number>
     </default>
