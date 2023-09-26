@@ -1,0 +1,71 @@
+<?php
+/**
+ * Copyright © Fiko Borizqy. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+
+<div class="message message-warning">
+    <small>
+        <?php foreach ($block->getCurrentCounters() as $id => $counter) : ?>
+            - <?= $escaper->escapeHtml(__('Current Counter Number of')) ?> <strong>Store View <?= $escaper->escapeHtml($id) ?></strong>:
+                <strong id="<?= $escaper->escapeHtmlAttr("{$block->getHtmlId()}_counter_{$id}") ?>"><?= $escaper->escapeHtml($counter) ?></strong> <br/>
+        <?php endforeach; ?>
+    </small>
+</div>
+<br/>
+<button class="scalable" type="button" id="<?= $block->getHtmlId() ?>">
+    <span id="<?= $block->getHtmlId() ?>_result"><?= $escaper->escapeHtml($block->getButtonLabel()) ?></span>
+</button>
+<small>
+    <br/><?= $escaper->escapeHtml(__('You can also reset manually the number by clicking this button.')) ?>
+</small>
+
+<script>
+require([
+    'jquery',
+    'Magento_Ui/js/modal/confirm'
+], function($, confirmation) {
+    'use strict';
+
+    $(document).on('click', '#<?= $block->getHtmlId() ?>', function() {
+        confirmation({
+            content: $.mage.__('Are you sure want to reset the counter number?'),
+            actions: {
+                confirm: function(){
+                    $('#<?= $block->getHtmlId() ?>_result').text('Resetting...');
+                    $('#<?= $block->getHtmlId() ?>').prop('disabled', true);
+                    resetCounter();
+                },
+            }
+        });
+    });
+
+    const resetCounter = async () => {
+        const htmlId = '<?= $escaper->escapeJs($block->getHtmlId()) ?>';
+        $.ajax({
+            url: "<?= $escaper->escapeJs($block->getAjaxUrl()) ?>",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                form_key: '<?= $escaper->escapeJs($block->getFormKey()) ?>',
+            },
+            success: function(response) {
+                if (typeof response?.counters !== 'undefined') {
+                    const counters = response?.counters;
+                    for (const k in counters) {
+                        $(`#${htmlId}_counter_${k}`).text(counters[k]);
+                    }
+                }
+            },
+            complete: function(response) {
+                $('#<?= $block->getHtmlId() ?>_result').text(response?.responseJSON?.message ?? 'Error happens. Try again.');
+                $('#<?= $block->getHtmlId() ?>').prop('disabled', false);
+            },
+            error: function (xhr, status, errorThrown) {
+                console.log('Error happens. Try again.');
+            }
+        });
+    };
+});
+</script>
