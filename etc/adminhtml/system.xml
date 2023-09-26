@@ -28,22 +28,22 @@
                             Define the format of the custom order number that will be created.
 
                             <br/><br/> You can use these options:
-                            <br/> {{counter}} : this is the incremental id
-                            <br/> {{d}} : 1 or 2 digits of the day (1-31)
-                            <br/> {{dd}} : 2 digits of the day (01-31)
-                            <br/> {{m}} : 1 or 2 digits of the month (1-12)
-                            <br/> {{mm}} : 2 digits of the month (01-12)
-                            <br/> {{yy}} : 2 digits of the year (00-99)
-                            <br/> {{yyyy}} : 4 digits of the year (1996-2023)
-                            <br/> {{storeId}} : Store View Id of where the order is created
-                            <br/> {{storeCode}} : Store View Code of where the order is created
-                            <br/> {{groupId}} : Store Id of where the order is created
-                            <br/> {{groupCode}} : Store Code of where the order is created
-                            <br/> {{websiteId}} : Website Id of where the order is created
-                            <br/> {{websiteCode}} : Website Code of where the order is created
+                            <br/> {counter} : this is the incremental id
+                            <br/> {d} : 1 or 2 digits of the day (1-31)
+                            <br/> {dd} : 2 digits of the day (01-31)
+                            <br/> {m} : 1 or 2 digits of the month (1-12)
+                            <br/> {mm} : 2 digits of the month (01-12)
+                            <br/> {yy} : 2 digits of the year (00-99)
+                            <br/> {yyyy} : 4 digits of the year (1996-2023)
+                            <br/> {storeId} : Store View Id of where the order is created
+                            <br/> {storeCode} : Store View Code of where the order is created
+                            <br/> {groupId} : Store Id of where the order is created
+                            <br/> {groupCode} : Store Code of where the order is created
+                            <br/> {websiteId} : Website Id of where the order is created
+                            <br/> {websiteCode} : Website Code of where the order is created
 
                             <br/><br/> For example:
-                            <br/> <strong>FIKO-{{yyyy}}-{{mm}}-{{dd}}-{{counter}}</strong> will create order number of <strong>FIKO-2023-07-02-000000001</strong>
+                            <br/> <strong>FIKO-{yyyy}-{mm}-{dd}-{counter}</strong> will create order number of <strong>FIKO-2023-07-02-000000001</strong>
                         ]]>
                     </comment>
                 </field>

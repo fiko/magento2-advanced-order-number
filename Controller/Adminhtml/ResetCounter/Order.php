@@ -7,6 +7,7 @@
 namespace Fiko\AdvancedOrderNumber\Controller\Adminhtml\ResetCounter;
 
 use Exception;
+use Fiko\AdvancedOrderNumber\Helper\Data as Helper;
 use Fiko\AdvancedOrderNumber\Model\Order as CounterOrder;
 use Laminas\Http\AbstractMessage;
 use Laminas\Http\Response;
@@ -32,20 +33,29 @@ class Order extends Action implements HttpPostActionInterface
     protected $counterOrder;
 
     /**
+     * @var Helper
+     */
+    protected $helper;
+
+    /**
      * Constructor
      *
      * @param Context $context
      * @param JsonFactory $jsonFactory
+     * @param CounterOrder $counterOrder
+     * @param Helper $helper
      */
     public function __construct(
         Context $context,
         ?JsonFactory $jsonFactory = null,
-        ?CounterOrder $counterOrder = null
+        ?CounterOrder $counterOrder = null,
+        ?Helper $helper = null
     ) {
         parent::__construct($context);
 
         $this->jsonFactory = $jsonFactory ?? ObjectManager::getInstance()->get(JsonFactory::class);
         $this->counterOrder = $counterOrder ?? ObjectManager::getInstance()->get(CounterOrder::class);
+        $this->helper = $helper ?? ObjectManager::getInstance()->get(Helper::class);
     }
 
     /**
@@ -54,10 +64,20 @@ class Order extends Action implements HttpPostActionInterface
     public function execute()
     {
         $resultJson = $this->jsonFactory->create();
-
+        $counters = [];
         try {
             $this->counterOrder->resetCounterNumber();
-            return $resultJson->setData(['message' => __('Succeeded to Reset Counter Number!')]);
+            $stores = $this->helper->storeManager->getStores(true);
+            foreach ($stores as $store) {
+                if ((int) $store->getId() === 0) {
+                    continue;
+                }
+                $counters[$store->getId()] = $this->helper->getCurrentCounter($store->getId());
+            }
+            return $resultJson->setData([
+                'message' => __('Succeeded to Reset Counter Number.'),
+                'counters' => $counters,
+            ]);
         } catch (Exception $e) {
             $resultJson->setStatusHeader(
                 Response::STATUS_CODE_500,

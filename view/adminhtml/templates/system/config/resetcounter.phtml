@@ -4,6 +4,7 @@
  * See COPYING.txt for license details.
  */
 ?>
+
 <div class="message message-warning">
     <small>
         <?php foreach ($block->getCurrentCounters() as $id => $counter) : ?>
@@ -19,6 +20,7 @@
 <small>
     <br/><?= $escaper->escapeHtml(__('You can also reset manually the number by clicking this button.')) ?>
 </small>
+
 <script>
 require([
     'jquery',
@@ -40,13 +42,21 @@ require([
     });
 
     const resetCounter = async () => {
+        const htmlId = '<?= $escaper->escapeJs($block->getHtmlId()) ?>';
         $.ajax({
             url: "<?= $escaper->escapeJs($block->getAjaxUrl()) ?>",
             type: 'POST',
             dataType: 'json',
             data: {
                 form_key: '<?= $escaper->escapeJs($block->getFormKey()) ?>',
-                html_id: '<?= $escaper->escapeJs($block->getHtmlId()) ?>',
+            },
+            success: function(response) {
+                if (typeof response?.counters !== 'undefined') {
+                    const counters = response?.counters;
+                    for (const k in counters) {
+                        $(`#${htmlId}_counter_${k}`).text(counters[k]);
+                    }
+                }
             },
             complete: function(response) {
                 $('#<?= $block->getHtmlId() ?>_result').text(response?.responseJSON?.message ?? 'Error happens. Try again.');
