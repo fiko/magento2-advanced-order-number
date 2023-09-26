@@ -12,6 +12,7 @@ use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Data\Form\FormKey;
+use Fiko\AdvancedOrderNumber\Helper\Data as HelperData;
 
 /**
  * Reset Counter Number Block
@@ -24,17 +25,25 @@ class ResetCounterNumber extends Field
     public $formKey;
 
     /**
+     * @var HelperData
+     */
+    public $helperData;
+
+    /**
      * @param Context $context
      * @param array $data
      * @param FormKey|null $formKey
+     * @param HelperData|null $helperData
      */
     public function __construct(
         Context $context,
         array $data = [],
-        ?FormKey $formKey = null
+        ?FormKey $formKey = null,
+        ?HelperData $helperData = null
     ) {
         parent::__construct($context, $data);
         $this->formKey = $formKey ?? ObjectManager::getInstance()->get(FormKey::class);
+        $this->helperData = $helperData ?? ObjectManager::getInstance()->get(HelperData::class);
     }
 
     /**
@@ -71,12 +80,23 @@ class ResetCounterNumber extends Field
     protected function _getElementHtml(AbstractElement $element): string
     {
         $originalData = $element->getOriginalData();
+        $currentCounters = [];
+
+        foreach ($this->helperData->storeManager->getStores(true) as $store) {
+            if ((int) $store->getId() === 0) {
+                continue;
+            }
+
+            $currentCounters[$store->getId()] = $this->helperData->getCurrentCounter($store->getId());
+        }
+
         $this->addData(
             [
                 'button_label' => __($originalData['button_label']),
                 'html_id' => $element->getHtmlId(),
                 'ajax_url' => $this->_urlBuilder->getUrl('fiko_aon/resetcounter/order'),
                 'form_key' => $this->formKey->getFormKey(),
+                'current_counters' => $currentCounters,
             ]
         );
 

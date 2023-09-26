@@ -6,8 +6,10 @@
 ?>
 <div class="message message-warning">
     <small>
-        - <?= $escaper->escapeHtml(__('Current Counter Number of')) ?> <strong>Store View 1: 12</strong> <br/>
-        - <?= $escaper->escapeHtml(__('Current Counter Number of')) ?> <strong>Store View 1: 23</strong> <br/>
+        <?php foreach ($block->getCurrentCounters() as $id => $counter) : ?>
+            - <?= $escaper->escapeHtml(__('Current Counter Number of')) ?> <strong>Store View <?= $escaper->escapeHtml($id) ?></strong>:
+                <strong id="<?= $escaper->escapeHtmlAttr("{$block->getHtmlId()}_counter_{$id}") ?>"><?= $escaper->escapeHtml($counter) ?></strong> <br/>
+        <?php endforeach; ?>
     </small>
 </div>
 <br/>
@@ -44,6 +46,7 @@ require([
             dataType: 'json',
             data: {
                 form_key: '<?= $escaper->escapeJs($block->getFormKey()) ?>',
+                html_id: '<?= $escaper->escapeJs($block->getHtmlId()) ?>',
             },
             complete: function(response) {
                 $('#<?= $block->getHtmlId() ?>_result').text(response?.responseJSON?.message ?? 'Error happens. Try again.');
