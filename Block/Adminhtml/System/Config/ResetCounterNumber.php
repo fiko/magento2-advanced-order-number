@@ -1,18 +1,18 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
+ * Copyright © Fiko Borizqy. All rights reserved.
  * See COPYING.txt for license details.
  */
 declare(strict_types=1);
 
 namespace Fiko\AdvancedOrderNumber\Block\Adminhtml\System\Config;
 
+use Fiko\AdvancedOrderNumber\Helper\Data as HelperData;
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Data\Form\FormKey;
-use Fiko\AdvancedOrderNumber\Helper\Data as HelperData;
 
 /**
  * Reset Counter Number Block
@@ -42,6 +42,7 @@ class ResetCounterNumber extends Field
         ?HelperData $helperData = null
     ) {
         parent::__construct($context, $data);
+
         $this->formKey = $formKey ?? ObjectManager::getInstance()->get(FormKey::class);
         $this->helperData = $helperData ?? ObjectManager::getInstance()->get(HelperData::class);
     }
@@ -54,6 +55,7 @@ class ResetCounterNumber extends Field
     protected function _prepareLayout()
     {
         parent::_prepareLayout();
+
         $this->setTemplate('Fiko_AdvancedOrderNumber::system/config/resetcounter.phtml');
         return $this;
     }

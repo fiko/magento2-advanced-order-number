@@ -159,7 +159,16 @@ class Data
         return $currentCounter;
     }
 
-    public function setupFormat($format, $counter, $storeId)
+    /**
+     * Replacing order number format to get the expected result of increment id
+     * format.
+     *
+     * @param string $format
+     * @param string|int $counter
+     * @param int $storeId
+     * @return string
+     */
+    public function setupFormat($format, $counter, $storeId): string
     {
         $currentDate = $this->dateTime->date();
         $currentStore = $this->storeManager->getStore($storeId);

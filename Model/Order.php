@@ -14,10 +14,27 @@ use Magento\Store\Model\ScopeInterface;
 
 class Order
 {
+    /**
+     * @var Data
+     */
     public $helper;
-    protected $storeId;
+
+    /**
+     * @var SalesOrderCollectionFactory
+     */
     protected $salesOrderCollectionFactory;
 
+    /**
+     * @var int store view id
+     */
+    protected $storeId;
+
+    /**
+     * Constructor
+     *
+     * @param Data $helper
+     * @param SalesOrderCollectionFactory $salesOrderCollectionFactory
+     */
     public function __construct(Data $helper, SalesOrderCollectionFactory $salesOrderCollectionFactory)
     {
         $this->helper = $helper;
@@ -25,8 +42,15 @@ class Order
         $this->storeId = null;
     }
 
-    public function customIncrementId($storeId = null): ?string
+    /**
+     * generating new next order number base from the configuration
+     *
+     * @param int|null $storeId Store view id
+     * @return string|null
+     */
+    public function generateIncrementId($storeId = null): ?string
     {
+        /** @var int store view id */
         $this->storeId = $storeId !== null ? $storeId : $this->helper->storeManager->getStore()->getId();
         if (! $this->helper->getConfig(Data::PATH_ORDER_ENABLED, ScopeInterface::SCOPE_STORE, $this->storeId)) {
             return null;
@@ -48,24 +72,45 @@ class Order
 
         $result = $this->setupFormat($format, $nextCounter);
         if ($this->validateIncrementId($result) === false) {
-            $result = $this->customIncrementId($storeId);
+            $result = $this->generateIncrementId($storeId);
         }
 
         return $result;
     }
 
-    public function setupFormat($format, $counter)
+    /**
+     * Replacing order number format to get the expected result of increment id
+     * format.
+     *
+     * @param string $format
+     * @param string|int $counter
+     * @return string
+     */
+    public function setupFormat($format, $counter): string
     {
         $format = str_replace('{counter}', $counter, $format);
 
         return $this->helper->setupFormat($format, $counter, $this->storeId);
     }
 
-    public function scheduledResetCounterNumber()
+    /**
+     * Crontab of reset order will execute this method on the first place
+     *
+     * @return void
+     */
+    public function scheduledResetCounterNumber(): void
     {
         $this->resetCounterNumber();
     }
 
+    /**
+     * resetting counter number of custom order number
+     *
+     * @param int|null $storeId
+     * @return void
+     *
+     * @throws Exception
+     */
     public function resetCounterNumber($storeId = null)
     {
         $stores = $storeId !== null ? [(int) $storeId] : $this->helper->storeManager->getStores(true);
@@ -92,7 +137,14 @@ class Order
         }
     }
 
-    public function validateIncrementId($incrementId)
+    /**
+     * Checking any existing orders if the next Increment Id already used by the
+     * existing order.
+     *
+     * @param string $incrementId
+     * @return bool
+     */
+    public function validateIncrementId($incrementId): bool
     {
         $salesOrderCollection = $this->salesOrderCollectionFactory->create()
             ->addFieldToSelect('increment_id')
