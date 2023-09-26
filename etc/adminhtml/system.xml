@@ -13,7 +13,7 @@
         <section id="fiko_advanced_order_number" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Advanced Order Number</label>
             <tab>fiko</tab>
-            <resource>Fiko_AdvancedOrderNumber::config_advanced_order_number</resource>
+            <resource>Fiko_AdvancedOrderNumber::config</resource>
             <group id="order" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Order</label>
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
