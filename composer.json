@@ -6,6 +6,12 @@
     "license": [
         "MIT"
     ],
+    "require": {
+        "magento/framework": "*",
+        "magento/module-sales": "*",
+        "magento/module-config": "*",
+        "laminas/laminas-http": "*"
+    },
     "autoload": {
         "psr-4": {
             "Fiko\\AdvancedOrderNumber\\": ""

@@ -6,5 +6,10 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Fiko_AdvancedOrderNumber" />
+    <module name="Fiko_AdvancedOrderNumber">
+        <sequence>
+            <module name="Magento_Store" />
+            <module name="Magento_Sales" />
+        </sequence>
+    </module>
 </config>
