@@ -4,6 +4,14 @@
 
 It's a magento 2 module to enable administrator to customise the order number (increment id).
 
+## Demo Site
+
+- Frontend Demo
+[https://demo.dev.fiko.me/](https://demo.dev.fiko.me/)
+- Backend Demo [https://demo.dev.fiko.me/admin](https://demo.dev.fiko.me/admin)
+  - username: **demo_aon**
+  - password: **demo123**
+
 ## How to install?
 
 #### Via Composer
